@@ -1,0 +1,31 @@
+diff --git a/src/plugins/sqldrivers/configure.json b/src/plugins/sqldrivers/configure.json
+index f738e58a..2cd61e9f 100644
+--- a/src/plugins/sqldrivers/configure.json
++++ b/src/plugins/sqldrivers/configure.json
+@@ -43,10 +43,11 @@
+         "ibase": {
+             "label": "InterBase",
+             "test": {},
+-            "headers": "ibase.h",
++            "headers": "firebird/ibase.h",
+             "sources": [
+                 { "libs": "-lgds32_ms", "condition": "config.win32" },
+-                { "libs": "-lgds", "condition": "!config.win32" }
++                { "libs": "-lgds", "condition": "!config.win32" },
++                { "libs": "-lfbclient", "condition": "!config.win32" }
+             ]
+         },
+         "mysql": {
+diff --git a/src/plugins/sqldrivers/ibase/qsql_ibase_p.h b/src/plugins/sqldrivers/ibase/qsql_ibase_p.h
+index 9109c2b4..7477d5ee 100644
+--- a/src/plugins/sqldrivers/ibase/qsql_ibase_p.h
++++ b/src/plugins/sqldrivers/ibase/qsql_ibase_p.h
+@@ -52,7 +52,7 @@
+ //
+ 
+ #include <QtSql/qsqldriver.h>
+-#include <ibase.h>
++#include <firebird/ibase.h>
+ 
+ #ifdef QT_PLUGIN
+ #define Q_EXPORT_SQLDRIVER_IBASE

@@ -1,0 +1,12 @@
+diff --git a/qmake/Makefile.unix b/qmake/Makefile.unix
+index ea792a7c..5401a5fe 100644
+--- a/qmake/Makefile.unix
++++ b/qmake/Makefile.unix
+@@ -183,6 +183,7 @@ CPPFLAGS = -g $(EXTRA_CPPFLAGS) \
+ CXXFLAGS = $(EXTRA_CXXFLAGS) $(CONFIG_CXXFLAGS) $(CPPFLAGS)
+ CFLAGS = $(CPPFLAGS) $(CONFIG_CFLAGS)
+ LFLAGS = $(EXTRA_LFLAGS) $(CONFIG_LFLAGS)
++LFLAGS = $(EXTRA_LFLAGS) $(CONFIG_LFLAGS) $(QMAKE_LFLAGS_RELEASE)
+ 
+ first all: $(BUILD_PATH)/bin/qmake$(EXEEXT)
+ qmake: $(BUILD_PATH)/bin/qmake$(EXEEXT)
