@@ -433,7 +433,7 @@ sed -i \
   -e "s|@@EPOCH@@|%{?epoch}%{!?epoch:0}|g" \
   -e "s|@@VERSION@@|%{version}|g" \
   -e "s|@@EVR@@|%{?epoch:%{epoch:}}%{version}-%{release}|g" \
-  %{buildroot}%{rpm_macros_dir}/macros.qt6-qtbase
+  %{buildroot}%{_rpmmacrodir}/macros.qt6-qtbase
 
 # create/own dirs
 mkdir -p %{buildroot}{%{_qt6_archdatadir}/mkspecs/modules,%{_qt6_importdir},%{_qt6_libexecdir},%{_qt6_plugindir}/{designer,iconengines,script,styles},%{_qt6_translationdir}}
