@@ -3,7 +3,7 @@
 %global multilib_archs x86_64 %{ix86} %{?mips} ppc64 ppc s390x s390 sparc64 sparcv9
 %global multilib_basearchs x86_64 %{?mips64} ppc64 s390x sparc64
 
-%if 0%{?rhel} && 0%{?rhel} < 9
+%if 0%{?fedora} && 0%{?rhel} < 9
 %ifarch %{ix86}
 %global no_sse2  1
 %endif
