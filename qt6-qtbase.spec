@@ -492,6 +492,11 @@ ln -s %{_qt6_libdir}/syncqt.pl %{buildroot}%{_qt6_bindir}/syncqt.pl
 
 rm %{buildroot}/%{_bindir}/qt-cmake-private-install.cmake
 
+# Use better location for some new scripts in qtbase-6.0.1
+mv %{buildroot}/%{_qt6_libdir}/android_cmakelist_patcher.sh %{buildroot}/%{_qt6_bindir}/android_cmakelist_patcher.sh
+mv %{buildroot}/%{_qt6_libdir}/android_emulator_launcher.sh %{buildroot}/%{_qt6_bindir}/android_emulator_launcher.sh
+mv %{buildroot}/%{_qt6_libdir}/ensure_pro_file.cmake %{buildroot}/%{_qt6_libdir}/cmake/Qt6/ensure_pro_file.cmake
+
 %check
 # verify Qt6.pc
 export PKG_CONFIG_PATH=%{buildroot}%{_libdir}/pkgconfig
@@ -610,6 +615,8 @@ make check -k ||:
 %{_bindir}/rcc*
 %{_bindir}/tracegen*
 %{_bindir}/uic*
+%{_qt6_bindir}/android_cmakelist_patcher.sh
+%{_qt6_bindir}/android_emulator_launcher.sh
 %{_qt6_bindir}/androiddeployqt
 %{_qt6_bindir}/androidtestrunner
 %{_qt6_bindir}/cmake_automoc_parser
