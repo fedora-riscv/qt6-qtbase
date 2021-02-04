@@ -35,8 +35,8 @@ BuildRequires: pkgconfig(libsystemd)
 
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
-Version: 6.0.0
-Release: 2%{?dist}
+Version: 6.0.1
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -366,7 +366,6 @@ export MAKEFLAGS="%{?_smp_mflags}"
  -DQT_FEATURE_enable_new_dtags=ON \
  -DQT_FEATURE_journald=%{?journald:ON}%{!?journald:OFF} \
  -DQT_FEATURE_openssl_linked=ON \
- -DQT_FEATURE_rpath=OFF \
  -DQT_FEATURE_separate_debug_info=OFF \
  -DQT_FEATURE_reduce_relocations=OFF \
  -DQT_FEATURE_relocatable=OFF \
@@ -426,7 +425,7 @@ translationdir=%{_qt6_translationdir}
 
 Name: Qt6
 Description: Qt6 Configuration
-Version: %{version}
+Version: 6.0.1
 EOF
 
 # rpm macros
@@ -558,11 +557,13 @@ make check -k ||:
 %{_rpmmacrodir}/macros.qt6-qtbase
 
 %files devel
+%dir %{_qt6_datadir}/modules
 %dir %{_qt6_libdir}/metatypes
 %dir %{_qt6_libdir}/cmake/Qt6
 %dir %{_qt6_libdir}/cmake/Qt6/3rdparty/extra-cmake-modules
 %dir %{_qt6_libdir}/cmake/Qt6/3rdparty/kwin
 %dir %{_qt6_libdir}/cmake/Qt6BuildInternals
+%dir %{_qt6_libdir}/cmake/Qt6BuildInternals/StandaloneTests/
 %dir %{_qt6_libdir}/cmake/Qt6Concurrent
 %dir %{_qt6_libdir}/cmake/Qt6Core
 %dir %{_qt6_libdir}/cmake/Qt6CoreTools
@@ -834,6 +835,9 @@ make check -k ||:
 
 
 %changelog
+* Thu Feb 04 2021 Jan Grulich <jgrulich@redhat.com> - 6.0.1-1
+- 6.0.1
+
 * Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 6.0.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
