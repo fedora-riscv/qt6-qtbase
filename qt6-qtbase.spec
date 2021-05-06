@@ -35,7 +35,7 @@ BuildRequires: pkgconfig(libsystemd)
 
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
-Version: 6.0.3
+Version: 6.1.0
 Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
@@ -73,9 +73,6 @@ Patch50: qtbase-version-check.patch
 # https://bugreports.qt.io/browse/QTBUG-49972
 # 2. Workaround sysmacros.h (pre)defining major/minor a breaking stuff
 Patch51: qtbase-moc-macros.patch
-
-# respect QMAKE_LFLAGS_RELEASE when building qmake
-Patch52: qtbase-qmake-lflags.patch
 
 # don't use relocatable heuristics to guess prefix when using -no-feature-relocatable
 Patch53: qtbase-no-relocatable.patch
@@ -329,8 +326,6 @@ test -x configure || chmod +x configure
 
 # use proper perl interpretter so autodeps work as expected
 sed -i -e "s|^#!/usr/bin/env perl$|#!%{__perl}|" \
- bin/fixqt4headers.pl \
- bin/syncqt.pl \
  mkspecs/features/data/unix/findclasslist.pl
 
 
@@ -428,7 +423,7 @@ translationdir=%{_qt6_translationdir}
 
 Name: Qt6
 Description: Qt6 Configuration
-Version: 6.0.3
+Version: 6.1.0
 EOF
 
 # rpm macros
@@ -450,11 +445,22 @@ mkdir %{buildroot}%{_bindir}
 pushd %{buildroot}%{_qt6_bindir}
 for i in * ; do
   case "${i}" in
-    moc|qdbuscpp2xml|qdbusxml2cpp|qlalr|qvkgen|qmake|rcc|tracegen|uic)
+    qdbuscpp2xml|qdbusxml2cpp)
       ln -v  ${i} %{buildroot}%{_bindir}/${i}-qt6
       ;;
     *)
       ln -v  ${i} %{buildroot}%{_bindir}/${i}
+      ;;
+  esac
+done
+popd
+
+# hardlink files to {_bindir}, add -qt6 postfix to not conflict
+pushd %{buildroot}%{_qt6_libdir}
+for i in * ; do
+  case "${i}" in
+    moc|qlalr|qvkgen|qmake|rcc|tracegen|uic)
+      ln -v  ${i} %{buildroot}%{_libdir}/${i}-qt6
       ;;
   esac
 done
@@ -484,14 +490,6 @@ install -p -m755 -D %{SOURCE6} %{buildroot}%{_sysconfdir}/X11/xinit/xinitrc.d/10
 # install privat headers for qtxcb
 mkdir -p %{buildroot}%{_qt6_headerdir}/QtXcb
 install -m 644 src/plugins/platforms/xcb/*.h %{buildroot}%{_qt6_headerdir}/QtXcb/
-
-# Taken from OpenSUSE
-# syncqt is installed in both %%_qt6_bindir and %%_qt6_libdir
-# QtSyncQtHelpers.cmake needs the libexec one...and qmake the other one.
-# Creating a symlink is not necessary
-rm %{buildroot}%{_bindir}/syncqt.pl
-rm %{buildroot}%{_qt6_bindir}/syncqt.pl
-ln -s %{_qt6_libdir}/syncqt.pl %{buildroot}%{_qt6_bindir}/syncqt.pl
 
 rm %{buildroot}/%{_bindir}/qt-cmake-private-install.cmake
 
@@ -574,7 +572,6 @@ make check -k ||:
 %dir %{_qt6_libdir}/cmake/Qt6Concurrent
 %dir %{_qt6_libdir}/cmake/Qt6Core
 %dir %{_qt6_libdir}/cmake/Qt6CoreTools
-%dir %{_qt6_libdir}/cmake/Qt6Core_qobject
 %dir %{_qt6_libdir}/cmake/Qt6DBus
 %dir %{_qt6_libdir}/cmake/Qt6DBusTools
 %dir %{_qt6_libdir}/cmake/Qt6DeviceDiscoverySupport
@@ -602,40 +599,41 @@ make check -k ||:
 %endif
 %{_bindir}/androiddeployqt
 %{_bindir}/androidtestrunner
-%{_bindir}/cmake_automoc_parser
-%{_bindir}/moc*
 %{_bindir}/qdbuscpp2xml*
 %{_bindir}/qdbusxml2cpp*
-%{_bindir}/qlalr*
 %{_bindir}/qmake*
 %{_bindir}/qt-cmake
 %{_bindir}/qt-cmake-private
 %{_bindir}/qt-cmake-standalone-test
 %{_bindir}/qt-configure-module
-%{_bindir}/qt-internal-configure-tests
-%{_bindir}/qvkgen*
-%{_bindir}/rcc*
-%{_bindir}/tracegen*
-%{_bindir}/uic*
+%{_libdir}/cmake_automoc_parser
+%{_libdir}/moc*
+%{_libdir}/qt-internal-configure-tests
+%{_libdir}/qvkgen*
+%{_libdir}/qlalr*
+%{_libdir}/rcc*
+%{_libdir}/tracegen*
+%{_libdir}/uic*
+%{_libdir}/syncqt.pl
+%{_libdir}/qt6/bin/qmake6
 %{_qt6_bindir}/android_emulator_launcher.sh
 %{_qt6_bindir}/androiddeployqt
 %{_qt6_bindir}/androidtestrunner
-%{_qt6_bindir}/cmake_automoc_parser
-%{_qt6_bindir}/moc
 %{_qt6_bindir}/qdbuscpp2xml
 %{_qt6_bindir}/qdbusxml2cpp
-%{_qt6_bindir}/qlalr
 %{_qt6_bindir}/qmake
 %{_qt6_bindir}/qt-cmake
 %{_qt6_bindir}/qt-cmake-private
 %{_qt6_bindir}/qt-cmake-private-install.cmake
 %{_qt6_bindir}/qt-cmake-standalone-test
 %{_qt6_bindir}/qt-configure-module
-%{_qt6_bindir}/qt-internal-configure-tests
-%{_qt6_bindir}/qvkgen
-%{_qt6_bindir}/rcc
-%{_qt6_bindir}/syncqt.pl
-%{_qt6_bindir}/uic
+%{_qt6_libdir}/cmake_automoc_parser
+%{_qt6_libdir}/moc
+%{_qt6_libdir}/qlalr
+%{_qt6_libdir}/qt-internal-configure-tests
+%{_qt6_libdir}/qvkgen
+%{_qt6_libdir}/rcc
+%{_qt6_libdir}/uic
 %{_qt6_datadir}/modules/*.json
 %if "%{_qt6_headerdir}" != "%{_includedir}"
 %dir %{_qt6_headerdir}
@@ -662,9 +660,6 @@ make check -k ||:
 %{_qt6_libdir}/libQt6Concurrent.so
 %{_qt6_libdir}/libQt6Core.prl
 %{_qt6_libdir}/libQt6Core.so
-# FIXME: Jan: OpenSUSE removes these, do we really need them?
-%{_qt6_libdir}/libQt6Core_qobject.a
-%{_qt6_libdir}/libQt6Core_qobject.prl
 %{_qt6_libdir}/libQt6DBus.prl
 %{_qt6_libdir}/libQt6DBus.so
 %{_qt6_libdir}/libQt6Gui.prl
@@ -710,7 +705,6 @@ make check -k ||:
 %{_qt6_libdir}/cmake/Qt6Core/*.cmake
 %{_qt6_libdir}/cmake/Qt6Core/Qt6CoreConfigureFileTemplate.in
 %{_qt6_libdir}/cmake/Qt6CoreTools/*.cmake
-%{_qt6_libdir}/cmake/Qt6Core_qobject/*.cmake
 %{_qt6_libdir}/cmake/Qt6DBus/*.cmake
 %{_qt6_libdir}/cmake/Qt6DBusTools/*.cmake
 %{_qt6_libdir}/cmake/Qt6DeviceDiscoverySupport/*.cmake
@@ -735,13 +729,12 @@ make check -k ||:
 %{_qt6_libdir}/cmake/Qt6Xml/*.cmake
 %{_qt6_libdir}/metatypes/*.json
 %{_qt6_libdir}/pkgconfig/Qt6.pc
-%{_qt6_libdir}/syncqt.pl
 
 %if 0%{?egl}
 %{_qt6_libdir}/libQt6EglFsKmsSupport.prl
 %{_qt6_libdir}/libQt6EglFsKmsSupport.so
 %endif
-%{_qt6_libdir}/qt6/bin/tracegen
+#{_qt6_libdir}/qt6/bin/tracegen
 ## private-devel globs
 %exclude %{_qt6_headerdir}/*/%{version}/
 
@@ -840,9 +833,13 @@ make check -k ||:
 %{_qt6_plugindir}/platformthemes/libqxdgdesktopportal.so
 %{_qt6_plugindir}/platformthemes/libqgtk3.so
 %{_qt6_plugindir}/printsupport/libcupsprintersupport.so
+%{_qt6_plugindir}/networkinformationbackends/libnetworkmanagernetworkinformationbackend.so
 
 
 %changelog
+* Thu May 06 2021 Jan Grulich <jgrulich@redhat.com> - 6.1.0-1
+- 6.1.0
+
 * Mon Apr 05 2021 Jan Grulich <jgrulich@redhat.com> - 6.0.3-1
 - 6.0.3
 
