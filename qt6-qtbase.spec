@@ -36,7 +36,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.1.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -837,6 +837,9 @@ make check -k ||:
 
 
 %changelog
+* Thu May 20 2021 Pete Walter <pwalter@fedoraproject.org> - 6.1.0-2
+- Rebuild for ICU 69
+
 * Thu May 06 2021 Jan Grulich <jgrulich@redhat.com> - 6.1.0-1
 - 6.1.0
 
