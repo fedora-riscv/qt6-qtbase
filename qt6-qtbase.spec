@@ -36,7 +36,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.1.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -455,16 +455,6 @@ for i in * ; do
 done
 popd
 
-# hardlink files to {_bindir}, add -qt6 postfix to not conflict
-pushd %{buildroot}%{_qt6_libdir}
-for i in * ; do
-  case "${i}" in
-    moc|qlalr|qvkgen|qmake|rcc|tracegen|uic)
-      ln -v  ${i} %{buildroot}%{_libdir}/${i}-qt6
-      ;;
-  esac
-done
-popd
 
 %ifarch %{multilib_archs}
 # multilib: qconfig.h
@@ -494,8 +484,7 @@ install -m 644 src/plugins/platforms/xcb/*.h %{buildroot}%{_qt6_headerdir}/QtXcb
 rm %{buildroot}/%{_bindir}/qt-cmake-private-install.cmake
 
 # Use better location for some new scripts in qtbase-6.0.1
-mv %{buildroot}/%{_qt6_libdir}/android_emulator_launcher.sh %{buildroot}/%{_qt6_bindir}/android_emulator_launcher.sh
-mv %{buildroot}/%{_qt6_libdir}/ensure_pro_file.cmake %{buildroot}/%{_qt6_libdir}/cmake/Qt6/ensure_pro_file.cmake
+mv %{buildroot}/%{_qt6_libexecdir}/ensure_pro_file.cmake %{buildroot}/%{_qt6_libdir}/cmake/Qt6/ensure_pro_file.cmake
 
 %check
 # verify Qt6.pc
@@ -606,17 +595,7 @@ make check -k ||:
 %{_bindir}/qt-cmake-private
 %{_bindir}/qt-cmake-standalone-test
 %{_bindir}/qt-configure-module
-%{_libdir}/cmake_automoc_parser
-%{_libdir}/moc*
-%{_libdir}/qt-internal-configure-tests
-%{_libdir}/qvkgen*
-%{_libdir}/qlalr*
-%{_libdir}/rcc*
-%{_libdir}/tracegen*
-%{_libdir}/uic*
-%{_libdir}/syncqt.pl
 %{_libdir}/qt6/bin/qmake6
-%{_qt6_bindir}/android_emulator_launcher.sh
 %{_qt6_bindir}/androiddeployqt
 %{_qt6_bindir}/androidtestrunner
 %{_qt6_bindir}/qdbuscpp2xml
@@ -627,13 +606,16 @@ make check -k ||:
 %{_qt6_bindir}/qt-cmake-private-install.cmake
 %{_qt6_bindir}/qt-cmake-standalone-test
 %{_qt6_bindir}/qt-configure-module
-%{_qt6_libdir}/cmake_automoc_parser
-%{_qt6_libdir}/moc
-%{_qt6_libdir}/qlalr
-%{_qt6_libdir}/qt-internal-configure-tests
-%{_qt6_libdir}/qvkgen
-%{_qt6_libdir}/rcc
-%{_qt6_libdir}/uic
+%{_qt6_libexecdir}/cmake_automoc_parser
+%{_qt6_libexecdir}/qt-internal-configure-tests
+%{_qt6_libexecdir}/syncqt.pl
+%{_qt6_libexecdir}/android_emulator_launcher.sh
+%{_qt6_libexecdir}/moc
+%{_qt6_libexecdir}/qlalr
+%{_qt6_libexecdir}/qt-internal-configure-tests
+%{_qt6_libexecdir}/qvkgen
+%{_qt6_libexecdir}/rcc
+%{_qt6_libexecdir}/uic
 %{_qt6_datadir}/modules/*.json
 %if "%{_qt6_headerdir}" != "%{_includedir}"
 %dir %{_qt6_headerdir}
@@ -734,7 +716,7 @@ make check -k ||:
 %{_qt6_libdir}/libQt6EglFsKmsSupport.prl
 %{_qt6_libdir}/libQt6EglFsKmsSupport.so
 %endif
-#{_qt6_libdir}/qt6/bin/tracegen
+%{_qt6_libexecdir}/tracegen
 ## private-devel globs
 %exclude %{_qt6_headerdir}/*/%{version}/
 
@@ -837,6 +819,9 @@ make check -k ||:
 
 
 %changelog
+* Mon May 24 2021 Jan Grulich <jgrulich@redhat.com> - 6.1.0-3
+- Rebuild with correct libexecdir path
+
 * Thu May 20 2021 Pete Walter <pwalter@fedoraproject.org> - 6.1.0-2
 - Rebuild for ICU 69
 
