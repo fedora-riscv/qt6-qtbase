@@ -681,6 +681,7 @@ make check -k ||:
 %{_qt6_libdir}/cmake/Qt6BuildInternals/*.cmake
 %{_qt6_libdir}/cmake/Qt6BuildInternals/QtStandaloneTestTemplateProject/CMakeLists.txt
 %{_qt6_libdir}/cmake/Qt6BuildInternals/StandaloneTests/QtBaseTestsConfig.cmake
+%{_qt6_libdir}/cmake/Qt6BuildInternals/QtStandaloneTestTemplateProject/Main.cmake
 %{_qt6_libdir}/cmake/Qt6Concurrent/*.cmake
 %{_qt6_libdir}/cmake/Qt6Core/*.cmake
 %{_qt6_libdir}/cmake/Qt6Core/Qt6CoreConfigureFileTemplate.in
