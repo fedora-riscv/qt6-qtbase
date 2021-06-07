@@ -35,8 +35,8 @@ BuildRequires: pkgconfig(libsystemd)
 
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
-Version: 6.1.0
-Release: 3%{?dist}
+Version: 6.1.1
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -423,7 +423,7 @@ translationdir=%{_qt6_translationdir}
 
 Name: Qt6
 Description: Qt6 Configuration
-Version: 6.1.0
+Version: 6.1.1
 EOF
 
 # rpm macros
@@ -819,6 +819,9 @@ make check -k ||:
 
 
 %changelog
+* Mon Jun 07 2021 Jan Grulich <jgrulich@redhat.com> - 6.1.1-1
+- 6.1.1
+
 * Mon May 24 2021 Jan Grulich <jgrulich@redhat.com> - 6.1.0-3
 - Rebuild with correct libexecdir path
 
