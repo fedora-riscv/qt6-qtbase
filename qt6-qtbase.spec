@@ -98,8 +98,6 @@ Patch90: qtbase-gcc11.patch
 
 ## upstream patches
 
-# allow building against Qt with C++20 enabled (QTBUG-93270)
-Patch100: qtbase-c++20.patch
 
 # Do not check any files in %%{_qt6_plugindir}/platformthemes/ for requires.
 # Those themes are there for platform integration. If the required libraries are
