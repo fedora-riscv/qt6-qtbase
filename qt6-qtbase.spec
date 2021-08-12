@@ -35,8 +35,8 @@ BuildRequires: pkgconfig(libsystemd)
 
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
-Version: 6.1.1
-Release: 2%{?dist}
+Version: 6.1.2
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -420,7 +420,7 @@ translationdir=%{_qt6_translationdir}
 
 Name: Qt6
 Description: Qt6 Configuration
-Version: 6.1.1
+Version: 6.1.2
 EOF
 
 # rpm macros
@@ -817,6 +817,9 @@ make check -k ||:
 
 
 %changelog
+* Thu Aug 12 2021 Jan Grulich <jgrulich@redhat.com> - 6.1.2-1
+- 6.1.2
+
 * Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 6.1.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
