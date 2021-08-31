@@ -41,7 +41,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.2.0%{?unstable:~%{prerelease}}
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -450,7 +450,7 @@ mkdir %{buildroot}%{_bindir}
 pushd %{buildroot}%{_qt6_bindir}
 for i in * ; do
   case "${i}" in
-    qdbuscpp2xml|qdbusxml2cpp)
+    qdbuscpp2xml|qdbusxml2cpp|qtpaths)
       ln -v  ${i} %{buildroot}%{_bindir}/${i}-qt6
       ;;
     *)
@@ -813,10 +813,10 @@ make check -k ||:
 %{_qt6_plugindir}/platforms/libqminimalegl.so
 %dir %{_qt6_plugindir}/egldeviceintegrations/
 %{_qt6_plugindir}/egldeviceintegrations/libqeglfs-kms-integration.so
-# {_qt6_plugindir}/egldeviceintegrations/libqeglfs-x11-integration.so
+%{_qt6_plugindir}/egldeviceintegrations/libqeglfs-x11-integration.so
 %{_qt6_plugindir}/egldeviceintegrations/libqeglfs-kms-egldevice-integration.so
 %{_qt6_plugindir}/egldeviceintegrations/libqeglfs-emu-integration.so
-# {_qt6_plugindir}/xcbglintegrations/libqxcb-egl-integration.so
+%{_qt6_plugindir}/xcbglintegrations/libqxcb-egl-integration.so
 %endif
 # Platforms
 %{_qt6_plugindir}/platforms/libqlinuxfb.so
@@ -833,6 +833,10 @@ make check -k ||:
 
 
 %changelog
+* Tue Aug 31 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~beta3-2
+- Fix file conflict with qt5-qttools
+- Rebuild against older libglvnd
+
 * Mon Aug 30 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~beta3-1
 - 6.2.0 - beta3
 
