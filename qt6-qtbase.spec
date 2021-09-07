@@ -41,7 +41,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.2.0%{?unstable:~%{prerelease}}
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -383,6 +383,7 @@ export MAKEFLAGS="%{?_smp_mflags}"
  -DQT_FEATURE_sql_mysql=ON \
  -DQT_FEATURE_sql_psql=ON \
  -DQT_FEATURE_sql_sqlite=ON \
+ -DQT_FEATURE_rpath=OFF \
  %{?dbus_linked:-DQT_FEATURE_dbus_linked=ON} \
  %{?pcre:-DQT_FEATURE_system_pcre2=ON} \
  %{?sqlite:-DQT_FEATURE_system_sqlite=ON} \
@@ -490,9 +491,6 @@ rm %{buildroot}/%{_bindir}/qt-cmake-private-install.cmake
 
 # Use better location for some new scripts in qtbase-6.0.1
 mv %{buildroot}/%{_qt6_libexecdir}/ensure_pro_file.cmake %{buildroot}/%{_qt6_libdir}/cmake/Qt6/ensure_pro_file.cmake
-
-# Remove useless files
-rm -rf %{buildroot}/%{_qt6_libdir}/cmake/Qt6/config.tests/static_link_order
 
 %check
 # verify Qt6.pc
@@ -833,6 +831,10 @@ make check -k ||:
 
 
 %changelog
+* Tue Sep 07 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~beta3-3
+- Disable rpath
+  Resolves: bz#1982699
+
 * Tue Aug 31 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~beta3-2
 - Fix file conflict with qt5-qttools
 - Rebuild against older libglvnd
