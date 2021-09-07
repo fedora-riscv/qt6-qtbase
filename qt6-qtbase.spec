@@ -36,7 +36,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.1.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -372,6 +372,7 @@ export MAKEFLAGS="%{?_smp_mflags}"
  -DQT_FEATURE_sql_mysql=ON \
  -DQT_FEATURE_sql_psql=ON \
  -DQT_FEATURE_sql_sqlite=ON \
+ -DQT_FEATURE_rpath=OFF \
  %{?dbus_linked:-DQT_FEATURE_dbus_linked=ON} \
  %{?pcre:-DQT_FEATURE_system_pcre2=ON} \
  %{?sqlite:-DQT_FEATURE_system_sqlite=ON} \
@@ -818,6 +819,10 @@ make check -k ||:
 
 
 %changelog
+* Tue Sep 07 2021 Jan Grulich <jgrulich@redhat.com> - 6.1.2-2
+- Disable rpath
+  Resolves: bz#1982699
+
 * Thu Aug 12 2021 Jan Grulich <jgrulich@redhat.com> - 6.1.2-1
 - 6.1.2
 
