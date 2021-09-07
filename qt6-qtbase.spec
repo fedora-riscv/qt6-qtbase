@@ -562,6 +562,7 @@ make check -k ||:
 %dir %{_qt6_datadir}/modules
 %dir %{_qt6_libdir}/metatypes
 %dir %{_qt6_libdir}/cmake/Qt6
+%dir %{_qt6_libdir}/cmake/Qt6/config.tests/
 %dir %{_qt6_libdir}/cmake/Qt6/3rdparty/extra-cmake-modules
 %dir %{_qt6_libdir}/cmake/Qt6/3rdparty/kwin
 %dir %{_qt6_libdir}/cmake/Qt6BuildInternals
@@ -680,6 +681,7 @@ make check -k ||:
 %{_qt6_libdir}/libQt6EglFsKmsGbmSupport.so
 %{_qt6_libdir}/cmake/Qt6/*.cmake
 %{_qt6_libdir}/cmake/Qt6/*.cmake.in
+%{_qt6_libdir}/cmake/Qt6/config.tests/*
 %{_qt6_libdir}/cmake/Qt6/ModuleDescription.json.in
 %{_qt6_libdir}/cmake/Qt6/QtFileConfigure.txt.in
 %{_qt6_libdir}/cmake/Qt6/QtSeparateDebugInfo.Info.plist.in
