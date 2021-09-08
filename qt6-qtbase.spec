@@ -41,7 +41,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.2.0%{?unstable:~%{prerelease}}
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -833,6 +833,9 @@ make check -k ||:
 
 
 %changelog
+* Wed Sep 08 2021 Rex Dieter <rdieter@fedoraproject.org> - 6.2.0~beta3-4
+- rebuild
+
 * Tue Sep 07 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~beta3-3
 - Disable rpath
   Resolves: bz#1982699
