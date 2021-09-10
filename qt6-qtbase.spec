@@ -35,13 +35,13 @@ BuildRequires: pkgconfig(libsystemd)
 
 %global unstable 1
 %if 0%{unstable}
-%global prerelease beta3
+%global prerelease beta4
 %endif
 
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.2.0%{?unstable:~%{prerelease}}
-Release: 4%{?dist}
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -429,7 +429,7 @@ translationdir=%{_qt6_translationdir}
 
 Name: Qt6
 Description: Qt6 Configuration
-Version: 6.2.0~beta3
+Version: 6.2.0
 EOF
 
 # rpm macros
@@ -495,7 +495,7 @@ mv %{buildroot}/%{_qt6_libexecdir}/ensure_pro_file.cmake %{buildroot}/%{_qt6_lib
 %check
 # verify Qt6.pc
 export PKG_CONFIG_PATH=%{buildroot}%{_libdir}/pkgconfig
-test "$(pkg-config --modversion Qt6)" = "%{version}"
+test "$(pkg-config --modversion Qt6)" = "%{qt_version}"
 %if 0%{?tests}
 ## see tests/README for expected environment (running a plasma session essentially)
 ## we are not quite there yet
@@ -549,10 +549,10 @@ make check -k ||:
 %dir %{_qt6_plugindir}/script/
 %dir %{_qt6_plugindir}/sqldrivers/
 %dir %{_qt6_plugindir}/styles/
-%{_qt6_plugindir}/networkinformation/libnetworkmanager.so
+%{_qt6_plugindir}/networkinformation/libqnetworkmanager.so
 %{_qt6_plugindir}/sqldrivers/libqsqlite.so
-%{_qt6_plugindir}/tls/libcertonlybackend.so
-%{_qt6_plugindir}/tls/libopensslbackend.so
+%{_qt6_plugindir}/tls/libqcertonlybackend.so
+%{_qt6_plugindir}/tls/libqopensslbackend.so
 
 %files common
 # mostly empty for now, consider: filesystem/dir ownership, licenses
@@ -833,6 +833,9 @@ make check -k ||:
 
 
 %changelog
+* Fri Sep 10 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~beta4-1
+- 6.2.0 - beta4
+
 * Wed Sep 08 2021 Rex Dieter <rdieter@fedoraproject.org> - 6.2.0~beta3-4
 - rebuild
 
