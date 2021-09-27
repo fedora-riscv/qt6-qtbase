@@ -38,7 +38,7 @@ BuildRequires: pkgconfig(libsystemd)
 
 %global unstable 1
 %if 0%{unstable}
-%global prerelease rc
+%global prerelease rc2
 %endif
 
 Name:    qt6-qtbase
@@ -836,6 +836,9 @@ make check -k ||:
 
 
 %changelog
+* Mon Sep 27 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~rc2-1
+- 6.2.0 - rc2
+
 * Sat Sep 18 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~rc-1
 - 6.2.0 - rc
 
