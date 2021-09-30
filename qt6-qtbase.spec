@@ -36,12 +36,12 @@ BuildRequires: pkgconfig(libsystemd)
 ## skip for now, until we're better at it --rex
 #global tests 1
 
-%global unstable 0
+#global unstable 0
 %global prerelease rc2
 
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
-Version: 6.2.0
+Version: 6.2.0%{?unstable:~%{prerelease}}
 Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
@@ -50,7 +50,7 @@ Url:     http://qt-project.org/
 %global  majmin %(echo %{version} | cut -d. -f1-2)
 %global  qt_version %(echo %{version} | cut -d~ -f1)
 
-%if 0%{unstable}
+%if 0%{?unstable}
 Source0: https://download.qt.io/development_releases/qt/%{majmin}/%{qt_version}/submodules/%{qt_module}-everywhere-src-%{qt_version}-%{prerelease}.tar.xz
 %else
 Source0: https://download.qt.io/official_releases/qt/%{majmin}/%{version}/submodules/%{qt_module}-everywhere-src-%{version}.tar.xz
