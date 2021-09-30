@@ -36,14 +36,12 @@ BuildRequires: pkgconfig(libsystemd)
 ## skip for now, until we're better at it --rex
 #global tests 1
 
-%global unstable 1
-%if 0%{unstable}
+%global unstable 0
 %global prerelease rc2
-%endif
 
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
-Version: 6.2.0%{?unstable:~%{prerelease}}
+Version: 6.2.0
 Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
@@ -836,6 +834,9 @@ make check -k ||:
 
 
 %changelog
+* Thu Sep 30 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0-1
+- 6.2.0
+
 * Mon Sep 27 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~rc2-1
 - 6.2.0 - rc2
 
