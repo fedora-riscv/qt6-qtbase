@@ -1,3 +1,6 @@
+# FIXME: qt6-qtdeclarative doesn't build on S390x
+# BUG: https://bugreports.qt.io/browse/QTBUG-93101
+ExcludeArch: s390x
 
 # See http://bugzilla.redhat.com/223663
 %global multilib_archs x86_64 %{ix86} %{?mips} ppc64 ppc s390x s390 sparc64 sparcv9
@@ -33,16 +36,25 @@ BuildRequires: pkgconfig(libsystemd)
 ## skip for now, until we're better at it --rex
 #global tests 1
 
+#global unstable 0
+%global prerelease rc2
+
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
-Version: 6.1.2
-Release: 2%{?dist}
+Version: 6.2.0%{?unstable:~%{prerelease}}
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Url:     http://qt-project.org/
 %global  majmin %(echo %{version} | cut -d. -f1-2)
+%global  qt_version %(echo %{version} | cut -d~ -f1)
+
+%if 0%{?unstable}
+Source0: https://download.qt.io/development_releases/qt/%{majmin}/%{qt_version}/submodules/%{qt_module}-everywhere-src-%{qt_version}-%{prerelease}.tar.xz
+%else
 Source0: https://download.qt.io/official_releases/qt/%{majmin}/%{version}/submodules/%{qt_module}-everywhere-src-%{version}.tar.xz
+%endif
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=1227295
 Source1: qtlogging.ini
@@ -73,9 +85,6 @@ Patch50: qtbase-version-check.patch
 # https://bugreports.qt.io/browse/QTBUG-49972
 # 2. Workaround sysmacros.h (pre)defining major/minor a breaking stuff
 Patch51: qtbase-moc-macros.patch
-
-# don't use relocatable heuristics to guess prefix when using -no-feature-relocatable
-Patch53: qtbase-no-relocatable.patch
 
 # drop -O3 and make -O2 by default
 Patch54: qtbase-cxxflag.patch
@@ -151,8 +160,12 @@ BuildRequires: pkgconfig(xkeyboard-config)
 %global vulkan 1
 BuildRequires: pkgconfig(vulkan)
 %global egl 1
-BuildRequires: libEGL-devel
+BuildRequires: mesa-libEGL-devel
+BuildRequires: pkgconfig(egl)
 BuildRequires: pkgconfig(gbm)
+BuildRequires: pkgconfig(libglvnd)
+BuildRequires: pkgconfig(x11)
+
 %global sqlite 1
 BuildRequires: pkgconfig(sqlite3) >= 3.7
 BuildRequires: pkgconfig(harfbuzz) >= 0.9.42
@@ -309,7 +322,7 @@ Qt6 libraries used for drawing widgets and OpenGL items.
 
 
 %prep
-%autosetup -n %{qt_module}-everywhere-src-%{version} -p1
+%autosetup -n %{qt_module}-everywhere-src-%{qt_version}%{?unstable:-%{prerelease}} -p1
 
 # move some bundled libs to ensure they're not accidentally used
 pushd src/3rdparty
@@ -395,10 +408,6 @@ export MAKEFLAGS="%{?_smp_mflags}"
 
 install -m644 -p -D %{SOURCE1} %{buildroot}%{_qt6_datadir}/qtlogging.ini
 
-# Thanks OpenSuse
-# Static library created by an example
-rm %{buildroot}%{_prefix}/lib/libpnp_basictools.a
-
 # Qt6.pc
 mkdir -p %{buildroot}%{_libdir}/pkgconfig
 cat << EOF > %{buildroot}%{_libdir}/pkgconfig/Qt6.pc
@@ -422,7 +431,7 @@ translationdir=%{_qt6_translationdir}
 
 Name: Qt6
 Description: Qt6 Configuration
-Version: 6.1.2
+Version: 6.2.0
 EOF
 
 # rpm macros
@@ -444,7 +453,7 @@ mkdir %{buildroot}%{_bindir}
 pushd %{buildroot}%{_qt6_bindir}
 for i in * ; do
   case "${i}" in
-    qdbuscpp2xml|qdbusxml2cpp)
+    qdbuscpp2xml|qdbusxml2cpp|qtpaths)
       ln -v  ${i} %{buildroot}%{_bindir}/${i}-qt6
       ;;
     *)
@@ -488,7 +497,7 @@ mv %{buildroot}/%{_qt6_libexecdir}/ensure_pro_file.cmake %{buildroot}/%{_qt6_lib
 %check
 # verify Qt6.pc
 export PKG_CONFIG_PATH=%{buildroot}%{_libdir}/pkgconfig
-test "$(pkg-config --modversion Qt6)" = "%{version}"
+test "$(pkg-config --modversion Qt6)" = "%{qt_version}"
 %if 0%{?tests}
 ## see tests/README for expected environment (running a plasma session essentially)
 ## we are not quite there yet
@@ -542,8 +551,10 @@ make check -k ||:
 %dir %{_qt6_plugindir}/script/
 %dir %{_qt6_plugindir}/sqldrivers/
 %dir %{_qt6_plugindir}/styles/
+%{_qt6_plugindir}/networkinformation/libqnetworkmanager.so
 %{_qt6_plugindir}/sqldrivers/libqsqlite.so
-%{_qt6_libdir}/cmake/Qt6Sql/Qt6QSQLiteDriverPlugin*.cmake
+%{_qt6_plugindir}/tls/libqcertonlybackend.so
+%{_qt6_plugindir}/tls/libqopensslbackend.so
 
 %files common
 # mostly empty for now, consider: filesystem/dir ownership, licenses
@@ -553,6 +564,7 @@ make check -k ||:
 %dir %{_qt6_datadir}/modules
 %dir %{_qt6_libdir}/metatypes
 %dir %{_qt6_libdir}/cmake/Qt6
+%dir %{_qt6_libdir}/cmake/Qt6/config.tests/
 %dir %{_qt6_libdir}/cmake/Qt6/3rdparty/extra-cmake-modules
 %dir %{_qt6_libdir}/cmake/Qt6/3rdparty/kwin
 %dir %{_qt6_libdir}/cmake/Qt6BuildInternals
@@ -562,25 +574,25 @@ make check -k ||:
 %dir %{_qt6_libdir}/cmake/Qt6CoreTools
 %dir %{_qt6_libdir}/cmake/Qt6DBus
 %dir %{_qt6_libdir}/cmake/Qt6DBusTools
-%dir %{_qt6_libdir}/cmake/Qt6DeviceDiscoverySupport
-%dir %{_qt6_libdir}/cmake/Qt6EglFSDeviceIntegration
-%dir %{_qt6_libdir}/cmake/Qt6EglFsKmsGbmSupport
-%dir %{_qt6_libdir}/cmake/Qt6EglFsKmsSupport
-%dir %{_qt6_libdir}/cmake/Qt6FbSupport
+%dir %{_qt6_libdir}/cmake/Qt6DeviceDiscoverySupportPrivate
+%dir %{_qt6_libdir}/cmake/Qt6EglFSDeviceIntegrationPrivate
+%dir %{_qt6_libdir}/cmake/Qt6EglFsKmsGbmSupportPrivate
+%dir %{_qt6_libdir}/cmake/Qt6EglFsKmsSupportPrivate
+%dir %{_qt6_libdir}/cmake/Qt6FbSupportPrivate
 %dir %{_qt6_libdir}/cmake/Qt6Gui
 %dir %{_qt6_libdir}/cmake/Qt6GuiTools
 %dir %{_qt6_libdir}/cmake/Qt6HostInfo
-%dir %{_qt6_libdir}/cmake/Qt6InputSupport
-%dir %{_qt6_libdir}/cmake/Qt6KmsSupport
+%dir %{_qt6_libdir}/cmake/Qt6FbSupportPrivate
+%dir %{_qt6_libdir}/cmake/Qt6KmsSupportPrivate
 %dir %{_qt6_libdir}/cmake/Qt6Network
 %dir %{_qt6_libdir}/cmake/Qt6OpenGL
 %dir %{_qt6_libdir}/cmake/Qt6OpenGLWidgets
 %dir %{_qt6_libdir}/cmake/Qt6PrintSupport
 %dir %{_qt6_libdir}/cmake/Qt6Sql
+%dir %{_qt6_libdir}/cmake/Qt6XcbQpaPrivate
 %dir %{_qt6_libdir}/cmake/Qt6Test
 %dir %{_qt6_libdir}/cmake/Qt6Widgets
 %dir %{_qt6_libdir}/cmake/Qt6WidgetsTools
-%dir %{_qt6_libdir}/cmake/Qt6XcbQpa
 %dir %{_qt6_libdir}/cmake/Qt6Xml
 %if "%{_qt6_bindir}" != "%{_bindir}"
 %dir %{_qt6_bindir}
@@ -590,6 +602,7 @@ make check -k ||:
 %{_bindir}/qdbuscpp2xml*
 %{_bindir}/qdbusxml2cpp*
 %{_bindir}/qmake*
+%{_bindir}/qtpaths*
 %{_bindir}/qt-cmake
 %{_bindir}/qt-cmake-private
 %{_bindir}/qt-cmake-standalone-test
@@ -600,6 +613,7 @@ make check -k ||:
 %{_qt6_bindir}/qdbuscpp2xml
 %{_qt6_bindir}/qdbusxml2cpp
 %{_qt6_bindir}/qmake
+%{_qt6_bindir}/qtpaths*
 %{_qt6_bindir}/qt-cmake
 %{_qt6_bindir}/qt-cmake-private
 %{_qt6_bindir}/qt-cmake-private-install.cmake
@@ -669,6 +683,7 @@ make check -k ||:
 %{_qt6_libdir}/libQt6EglFsKmsGbmSupport.so
 %{_qt6_libdir}/cmake/Qt6/*.cmake
 %{_qt6_libdir}/cmake/Qt6/*.cmake.in
+%{_qt6_libdir}/cmake/Qt6/config.tests/*
 %{_qt6_libdir}/cmake/Qt6/ModuleDescription.json.in
 %{_qt6_libdir}/cmake/Qt6/QtFileConfigure.txt.in
 %{_qt6_libdir}/cmake/Qt6/QtSeparateDebugInfo.Info.plist.in
@@ -689,25 +704,26 @@ make check -k ||:
 %{_qt6_libdir}/cmake/Qt6CoreTools/*.cmake
 %{_qt6_libdir}/cmake/Qt6DBus/*.cmake
 %{_qt6_libdir}/cmake/Qt6DBusTools/*.cmake
-%{_qt6_libdir}/cmake/Qt6DeviceDiscoverySupport/*.cmake
-%{_qt6_libdir}/cmake/Qt6EglFSDeviceIntegration/*.cmake
-%{_qt6_libdir}/cmake/Qt6EglFsKmsGbmSupport/*.cmake
-%{_qt6_libdir}/cmake/Qt6EglFsKmsSupport/*.cmake
-%{_qt6_libdir}/cmake/Qt6FbSupport/*.cmake
+%{_qt6_libdir}/cmake/Qt6DeviceDiscoverySupportPrivate/*.cmake
+%{_qt6_libdir}/cmake/Qt6EglFSDeviceIntegrationPrivate/*.cmake
+%{_qt6_libdir}/cmake/Qt6EglFsKmsGbmSupportPrivate/*.cmake
+%{_qt6_libdir}/cmake/Qt6EglFsKmsSupportPrivate/*.cmake
+%{_qt6_libdir}/cmake/Qt6FbSupportPrivate/*.cmake
 %{_qt6_libdir}/cmake/Qt6Gui/*.cmake
 %{_qt6_libdir}/cmake/Qt6GuiTools/*.cmake
 %{_qt6_libdir}/cmake/Qt6HostInfo/*.cmake
-%{_qt6_libdir}/cmake/Qt6InputSupport/*.cmake
-%{_qt6_libdir}/cmake/Qt6KmsSupport/*.cmake
+%{_qt6_libdir}/cmake/Qt6InputSupportPrivate/*.cmake
+%{_qt6_libdir}/cmake/Qt6KmsSupportPrivate/*.cmake
 %{_qt6_libdir}/cmake/Qt6Network/*.cmake
 %{_qt6_libdir}/cmake/Qt6OpenGL/*.cmake
 %{_qt6_libdir}/cmake/Qt6OpenGLWidgets/*.cmake
 %{_qt6_libdir}/cmake/Qt6PrintSupport/*.cmake
 %{_qt6_libdir}/cmake/Qt6Sql/*.cmake
+%{_qt6_libdir}/cmake/Qt6Sql/Qt6QSQLiteDriverPlugin*.cmake
 %{_qt6_libdir}/cmake/Qt6Test/*.cmake
 %{_qt6_libdir}/cmake/Qt6Widgets/*.cmake
 %{_qt6_libdir}/cmake/Qt6WidgetsTools/*.cmake
-%{_qt6_libdir}/cmake/Qt6XcbQpa/*.cmake
+%{_qt6_libdir}/cmake/Qt6XcbQpaPrivate/*.cmake
 %{_qt6_libdir}/cmake/Qt6Xml/*.cmake
 %{_qt6_libdir}/metatypes/*.json
 %{_qt6_libdir}/pkgconfig/Qt6.pc
@@ -718,10 +734,10 @@ make check -k ||:
 %endif
 %{_qt6_libexecdir}/tracegen
 ## private-devel globs
-%exclude %{_qt6_headerdir}/*/%{version}/
+%exclude %{_qt6_headerdir}/*/%{qt_version}/
 
 %files private-devel
-%{_qt6_headerdir}/*/%{version}/
+%{_qt6_headerdir}/*/%{qt_version}/
 
 %files static
 %{_qt6_headerdir}/QtDeviceDiscoverySupport
@@ -800,9 +816,9 @@ make check -k ||:
 %dir %{_qt6_plugindir}/egldeviceintegrations/
 %{_qt6_plugindir}/egldeviceintegrations/libqeglfs-kms-integration.so
 %{_qt6_plugindir}/egldeviceintegrations/libqeglfs-x11-integration.so
-%{_qt6_plugindir}/xcbglintegrations/libqxcb-egl-integration.so
 %{_qt6_plugindir}/egldeviceintegrations/libqeglfs-kms-egldevice-integration.so
 %{_qt6_plugindir}/egldeviceintegrations/libqeglfs-emu-integration.so
+%{_qt6_plugindir}/xcbglintegrations/libqxcb-egl-integration.so
 %endif
 # Platforms
 %{_qt6_plugindir}/platforms/libqlinuxfb.so
@@ -810,18 +826,46 @@ make check -k ||:
 %{_qt6_plugindir}/platforms/libqoffscreen.so
 %{_qt6_plugindir}/platforms/libqxcb.so
 %{_qt6_plugindir}/platforms/libqvnc.so
+%{_qt6_plugindir}/platforms/libqvkkhrdisplay.so
 %{_qt6_plugindir}/xcbglintegrations/libqxcb-glx-integration.so
 # Platformthemes
 %{_qt6_plugindir}/platformthemes/libqxdgdesktopportal.so
 %{_qt6_plugindir}/platformthemes/libqgtk3.so
 %{_qt6_plugindir}/printsupport/libcupsprintersupport.so
-%{_qt6_plugindir}/networkinformationbackends/libnetworkmanagernetworkinformationbackend.so
 
 
 %changelog
-* Tue Sep 07 2021 Jan Grulich <jgrulich@redhat.com> - 6.1.2-2
+* Thu Sep 30 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0-1
+- 6.2.0
+
+* Mon Sep 27 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~rc2-1
+- 6.2.0 - rc2
+
+* Sat Sep 18 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~rc-1
+- 6.2.0 - rc
+
+* Tue Sep 14 2021 Sahana Prasad <sahana@redhat.com> - 6.2.0~beta4-3
+- Rebuilt with OpenSSL 3.0.0
+
+* Mon Sep 13 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~beta4-2
+- Skip s390x for qtdeclarative issue
+
+* Fri Sep 10 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~beta4-1
+- 6.2.0 - beta4
+
+* Wed Sep 08 2021 Rex Dieter <rdieter@fedoraproject.org> - 6.2.0~beta3-4
+- rebuild
+
+* Tue Sep 07 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~beta3-3
 - Disable rpath
   Resolves: bz#1982699
+
+* Tue Aug 31 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~beta3-2
+- Fix file conflict with qt5-qttools
+- Rebuild against older libglvnd
+
+* Mon Aug 30 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0~beta3-1
+- 6.2.0 - beta3
 
 * Thu Aug 12 2021 Jan Grulich <jgrulich@redhat.com> - 6.1.2-1
 - 6.1.2
