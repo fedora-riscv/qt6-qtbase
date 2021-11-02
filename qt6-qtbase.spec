@@ -41,8 +41,8 @@ BuildRequires: pkgconfig(libsystemd)
 
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
-Version: 6.2.0%{?unstable:~%{prerelease}}
-Release: 2%{?dist}
+Version: 6.2.1
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -98,9 +98,8 @@ Patch56: qtbase-mysql.patch
 # python3
 Patch57: qtbase-python3.patch
 
-# https://fedoraproject.org/wiki/Changes/Qt_Wayland_By_Default_On_Gnome
-# https://bugzilla.redhat.com/show_bug.cgi?id=1732129
-Patch80: qtbase-use-wayland-on-gnome.patch
+# fix FTBFS against libglvnd-1.3.4+
+Patch58: qtbase-libglvnd.patch
 
 # gcc-11
 Patch90: qtbase-gcc11.patch
@@ -431,7 +430,7 @@ translationdir=%{_qt6_translationdir}
 
 Name: Qt6
 Description: Qt6 Configuration
-Version: 6.2.0
+Version: 6.2.1
 EOF
 
 # rpm macros
@@ -684,6 +683,7 @@ make check -k ||:
 %{_qt6_libdir}/cmake/Qt6/*.cmake
 %{_qt6_libdir}/cmake/Qt6/*.cmake.in
 %{_qt6_libdir}/cmake/Qt6/config.tests/*
+%{_qt6_libdir}/cmake/Qt6/platforms/Platform/*.cmake
 %{_qt6_libdir}/cmake/Qt6/ModuleDescription.json.in
 %{_qt6_libdir}/cmake/Qt6/QtFileConfigure.txt.in
 %{_qt6_libdir}/cmake/Qt6/QtSeparateDebugInfo.Info.plist.in
@@ -835,6 +835,9 @@ make check -k ||:
 
 
 %changelog
+* Fri Oct 29 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.1-1
+- 6.2.1
+
 * Wed Oct 06 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.0-2
 - Rebuild (possible qtmultimedia issue)
 
