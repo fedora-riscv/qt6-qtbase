@@ -42,7 +42,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.2.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -834,6 +834,9 @@ make check -k ||:
 
 
 %changelog
+* Thu Jan 06 2022 Filip Januš <fjanus@redhat.com> - 6.2.2-2
+- Rebuild for Postgresql 14
+
 * Tue Dec 14 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.2-1
 - 6.2.2
 
