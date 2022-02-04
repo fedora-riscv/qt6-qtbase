@@ -41,7 +41,7 @@ BuildRequires: pkgconfig(libsystemd)
 
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
-Version: 6.2.2
+Version: 6.2.3
 Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
@@ -429,7 +429,7 @@ translationdir=%{_qt6_translationdir}
 
 Name: Qt6
 Description: Qt6 Configuration
-Version: 6.2.2
+Version: 6.2.3
 EOF
 
 # rpm macros
@@ -562,11 +562,13 @@ make check -k ||:
 %dir %{_qt6_datadir}/modules
 %dir %{_qt6_libdir}/metatypes
 %dir %{_qt6_libdir}/cmake/Qt6
-%dir %{_qt6_libdir}/cmake/Qt6/config.tests/
+%dir %{_qt6_libdir}/cmake/Qt6/platforms
+%dir %{_qt6_libdir}/cmake/Qt6/platforms/Platform
+%dir %{_qt6_libdir}/cmake/Qt6/config.tests
 %dir %{_qt6_libdir}/cmake/Qt6/3rdparty/extra-cmake-modules
 %dir %{_qt6_libdir}/cmake/Qt6/3rdparty/kwin
 %dir %{_qt6_libdir}/cmake/Qt6BuildInternals
-%dir %{_qt6_libdir}/cmake/Qt6BuildInternals/StandaloneTests/
+%dir %{_qt6_libdir}/cmake/Qt6BuildInternals/StandaloneTests
 %dir %{_qt6_libdir}/cmake/Qt6Concurrent
 %dir %{_qt6_libdir}/cmake/Qt6Core
 %dir %{_qt6_libdir}/cmake/Qt6CoreTools
@@ -834,6 +836,15 @@ make check -k ||:
 
 
 %changelog
+* Mon Jan 31 2022 Jan Grulich <jgrulich@redhat.com> - 6.2.3-1
+- 6.2.3
+
+* Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 6.2.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Thu Jan 06 2022 Filip Januš <fjanus@redhat.com> - 6.2.2-2
+- Rebuild for Postgresql 14
+
 * Tue Dec 14 2021 Jan Grulich <jgrulich@redhat.com> - 6.2.2-1
 - 6.2.2
 
