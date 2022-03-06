@@ -1,6 +1,3 @@
-# FIXME: qt6-qtdeclarative doesn't build on S390x
-# BUG: https://bugreports.qt.io/browse/QTBUG-93101
-ExcludeArch: s390x
 
 # See http://bugzilla.redhat.com/223663
 %global multilib_archs x86_64 %{ix86} %{?mips} ppc64 ppc s390x s390 sparc64 sparcv9
@@ -42,7 +39,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.2.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -836,6 +833,9 @@ make check -k ||:
 
 
 %changelog
+* Fri Feb 25 2022 Jan Grulich <jgrulich@redhat.com> - 6.2.3-2
+- Enable s390x builds
+
 * Mon Jan 31 2022 Jan Grulich <jgrulich@redhat.com> - 6.2.3-1
 - 6.2.3
 
