@@ -38,8 +38,8 @@ BuildRequires: pkgconfig(libsystemd)
 
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
-Version: 6.2.3
-Release: 2%{?dist}
+Version: 6.3.0
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -91,9 +91,6 @@ Patch55: qtbase-firebird.patch
 
 # fix for new mariadb
 Patch56: qtbase-mysql.patch
-
-# python3
-Patch57: qtbase-python3.patch
 
 # fix FTBFS against libglvnd-1.3.4+
 Patch58: qtbase-libglvnd.patch
@@ -322,7 +319,7 @@ Qt6 libraries used for drawing widgets and OpenGL items.
 # move some bundled libs to ensure they're not accidentally used
 pushd src/3rdparty
 mkdir UNUSED
-mv harfbuzz-ng freetype libjpeg libpng sqlite xcb zlib UNUSED/
+mv harfbuzz-ng freetype libjpeg libpng sqlite zlib UNUSED/
 popd
 
 # builds failing mysteriously on f20
@@ -426,7 +423,7 @@ translationdir=%{_qt6_translationdir}
 
 Name: Qt6
 Description: Qt6 Configuration
-Version: 6.2.3
+Version: 6.3.0
 EOF
 
 # rpm macros
@@ -546,6 +543,7 @@ make check -k ||:
 %dir %{_qt6_plugindir}/script/
 %dir %{_qt6_plugindir}/sqldrivers/
 %dir %{_qt6_plugindir}/styles/
+%{_qt6_plugindir}/networkinformation/libqglib.so
 %{_qt6_plugindir}/networkinformation/libqnetworkmanager.so
 %{_qt6_plugindir}/sqldrivers/libqsqlite.so
 %{_qt6_plugindir}/tls/libqcertonlybackend.so
@@ -678,6 +676,7 @@ make check -k ||:
 %{_qt6_libdir}/libQt6EglFSDeviceIntegration.so
 %{_qt6_libdir}/libQt6EglFsKmsGbmSupport.prl
 %{_qt6_libdir}/libQt6EglFsKmsGbmSupport.so
+%{_qt6_libdir}/cmake/Qt6/*.h.in
 %{_qt6_libdir}/cmake/Qt6/*.cmake
 %{_qt6_libdir}/cmake/Qt6/*.cmake.in
 %{_qt6_libdir}/cmake/Qt6/config.tests/*
@@ -833,6 +832,9 @@ make check -k ||:
 
 
 %changelog
+* Wed Apr 13 2022 Jan Grulich <jgrulich@redhat.com> - 6.3.0-1
+- 6.3.0
+
 * Fri Feb 25 2022 Jan Grulich <jgrulich@redhat.com> - 6.2.3-2
 - Enable s390x builds
 
