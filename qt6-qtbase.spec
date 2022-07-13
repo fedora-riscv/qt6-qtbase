@@ -38,7 +38,7 @@ BuildRequires: pkgconfig(libsystemd)
 
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
-Version: 6.3.0
+Version: 6.3.1
 Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
@@ -423,7 +423,7 @@ translationdir=%{_qt6_translationdir}
 
 Name: Qt6
 Description: Qt6 Configuration
-Version: 6.3.0
+Version: 6.3.1
 EOF
 
 # rpm macros
@@ -619,11 +619,13 @@ make check -k ||:
 %{_qt6_libexecdir}/syncqt.pl
 %{_qt6_libexecdir}/android_emulator_launcher.sh
 %{_qt6_libexecdir}/moc
+%{_qt6_libexecdir}/tracegen
 %{_qt6_libexecdir}/qlalr
 %{_qt6_libexecdir}/qt-internal-configure-tests
 %{_qt6_libexecdir}/qvkgen
 %{_qt6_libexecdir}/rcc
 %{_qt6_libexecdir}/uic
+%{_qt6_libexecdir}/qt-testrunner.py
 %{_qt6_datadir}/modules/*.json
 %if "%{_qt6_headerdir}" != "%{_includedir}"
 %dir %{_qt6_headerdir}
@@ -679,7 +681,10 @@ make check -k ||:
 %{_qt6_libdir}/cmake/Qt6/*.h.in
 %{_qt6_libdir}/cmake/Qt6/*.cmake
 %{_qt6_libdir}/cmake/Qt6/*.cmake.in
+%{_qt6_libdir}/cmake/Qt6/PkgConfigLibrary.pc.in
 %{_qt6_libdir}/cmake/Qt6/config.tests/*
+%{_qt6_libdir}/cmake/Qt6/libexec/*
+%{_qt6_libdir}/cmake/Qt6/platforms/*.cmake
 %{_qt6_libdir}/cmake/Qt6/platforms/Platform/*.cmake
 %{_qt6_libdir}/cmake/Qt6/ModuleDescription.json.in
 %{_qt6_libdir}/cmake/Qt6/QtFileConfigure.txt.in
@@ -723,13 +728,12 @@ make check -k ||:
 %{_qt6_libdir}/cmake/Qt6XcbQpaPrivate/*.cmake
 %{_qt6_libdir}/cmake/Qt6Xml/*.cmake
 %{_qt6_libdir}/metatypes/*.json
-%{_qt6_libdir}/pkgconfig/Qt6.pc
+%{_qt6_libdir}/pkgconfig/*.pc
 
 %if 0%{?egl}
 %{_qt6_libdir}/libQt6EglFsKmsSupport.prl
 %{_qt6_libdir}/libQt6EglFsKmsSupport.so
 %endif
-%{_qt6_libexecdir}/tracegen
 ## private-devel globs
 %exclude %{_qt6_headerdir}/*/%{qt_version}/
 
@@ -832,6 +836,9 @@ make check -k ||:
 
 
 %changelog
+* Wed Jul 13 2022 Jan Grulich <jgrulich@redhat.com> - 6.3.1-1
+- 6.3.1
+
 * Wed Apr 13 2022 Jan Grulich <jgrulich@redhat.com> - 6.3.0-1
 - 6.3.0
 
