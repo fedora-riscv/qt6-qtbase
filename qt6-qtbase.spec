@@ -39,7 +39,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.3.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -414,7 +414,7 @@ headerdir=%{_qt6_headerdir}
 importdir=%{_qt6_importdir}
 libdir=%{_qt6_libdir}
 libexecdir=%{_qt6_libexecdir}
-moc=%{_qt6_bindir}/moc
+moc=%{_qt6_libexecdir}/moc
 plugindir=%{_qt6_plugindir}
 qmake=%{_qt6_bindir}/qmake
 settingsdir=%{_qt6_settingsdir}
@@ -836,6 +836,10 @@ make check -k ||:
 
 
 %changelog
+* Fri Jul 29 2022 Jan Grulich <jgrulich@redhat.com> - 6.3.1-3
+- Fix moc location in pkgconfig file
+  Resolves: bz#2112029
+
 * Sat Jul 23 2022 Fedora Release Engineering <releng@fedoraproject.org> - 6.3.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 
