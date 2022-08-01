@@ -39,7 +39,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.3.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -836,6 +836,9 @@ make check -k ||:
 
 
 %changelog
+* Mon Aug 01 2022 Frantisek Zatloukal <fzatlouk@redhat.com> - 6.3.1-4
+- Rebuilt for ICU 71.1
+
 * Fri Jul 29 2022 Jan Grulich <jgrulich@redhat.com> - 6.3.1-3
 - Fix moc location in pkgconfig file
   Resolves: bz#2112029
