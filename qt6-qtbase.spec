@@ -38,8 +38,8 @@ BuildRequires: pkgconfig(libsystemd)
 
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
-Version: 6.2.3
-Release: 2%{?dist}
+Version: 6.3.1
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -91,9 +91,6 @@ Patch55: qtbase-firebird.patch
 
 # fix for new mariadb
 Patch56: qtbase-mysql.patch
-
-# python3
-Patch57: qtbase-python3.patch
 
 # fix FTBFS against libglvnd-1.3.4+
 Patch58: qtbase-libglvnd.patch
@@ -322,7 +319,7 @@ Qt6 libraries used for drawing widgets and OpenGL items.
 # move some bundled libs to ensure they're not accidentally used
 pushd src/3rdparty
 mkdir UNUSED
-mv harfbuzz-ng freetype libjpeg libpng sqlite xcb zlib UNUSED/
+mv harfbuzz-ng freetype libjpeg libpng sqlite zlib UNUSED/
 popd
 
 # builds failing mysteriously on f20
@@ -417,7 +414,7 @@ headerdir=%{_qt6_headerdir}
 importdir=%{_qt6_importdir}
 libdir=%{_qt6_libdir}
 libexecdir=%{_qt6_libexecdir}
-moc=%{_qt6_bindir}/moc
+moc=%{_qt6_libexecdir}/moc
 plugindir=%{_qt6_plugindir}
 qmake=%{_qt6_bindir}/qmake
 settingsdir=%{_qt6_settingsdir}
@@ -426,7 +423,7 @@ translationdir=%{_qt6_translationdir}
 
 Name: Qt6
 Description: Qt6 Configuration
-Version: 6.2.3
+Version: 6.3.1
 EOF
 
 # rpm macros
@@ -546,6 +543,7 @@ make check -k ||:
 %dir %{_qt6_plugindir}/script/
 %dir %{_qt6_plugindir}/sqldrivers/
 %dir %{_qt6_plugindir}/styles/
+%{_qt6_plugindir}/networkinformation/libqglib.so
 %{_qt6_plugindir}/networkinformation/libqnetworkmanager.so
 %{_qt6_plugindir}/sqldrivers/libqsqlite.so
 %{_qt6_plugindir}/tls/libqcertonlybackend.so
@@ -621,11 +619,13 @@ make check -k ||:
 %{_qt6_libexecdir}/syncqt.pl
 %{_qt6_libexecdir}/android_emulator_launcher.sh
 %{_qt6_libexecdir}/moc
+%{_qt6_libexecdir}/tracegen
 %{_qt6_libexecdir}/qlalr
 %{_qt6_libexecdir}/qt-internal-configure-tests
 %{_qt6_libexecdir}/qvkgen
 %{_qt6_libexecdir}/rcc
 %{_qt6_libexecdir}/uic
+%{_qt6_libexecdir}/qt-testrunner.py
 %{_qt6_datadir}/modules/*.json
 %if "%{_qt6_headerdir}" != "%{_includedir}"
 %dir %{_qt6_headerdir}
@@ -678,9 +678,13 @@ make check -k ||:
 %{_qt6_libdir}/libQt6EglFSDeviceIntegration.so
 %{_qt6_libdir}/libQt6EglFsKmsGbmSupport.prl
 %{_qt6_libdir}/libQt6EglFsKmsGbmSupport.so
+%{_qt6_libdir}/cmake/Qt6/*.h.in
 %{_qt6_libdir}/cmake/Qt6/*.cmake
 %{_qt6_libdir}/cmake/Qt6/*.cmake.in
+%{_qt6_libdir}/cmake/Qt6/PkgConfigLibrary.pc.in
 %{_qt6_libdir}/cmake/Qt6/config.tests/*
+%{_qt6_libdir}/cmake/Qt6/libexec/*
+%{_qt6_libdir}/cmake/Qt6/platforms/*.cmake
 %{_qt6_libdir}/cmake/Qt6/platforms/Platform/*.cmake
 %{_qt6_libdir}/cmake/Qt6/ModuleDescription.json.in
 %{_qt6_libdir}/cmake/Qt6/QtFileConfigure.txt.in
@@ -724,13 +728,12 @@ make check -k ||:
 %{_qt6_libdir}/cmake/Qt6XcbQpaPrivate/*.cmake
 %{_qt6_libdir}/cmake/Qt6Xml/*.cmake
 %{_qt6_libdir}/metatypes/*.json
-%{_qt6_libdir}/pkgconfig/Qt6.pc
+%{_qt6_libdir}/pkgconfig/*.pc
 
 %if 0%{?egl}
 %{_qt6_libdir}/libQt6EglFsKmsSupport.prl
 %{_qt6_libdir}/libQt6EglFsKmsSupport.so
 %endif
-%{_qt6_libexecdir}/tracegen
 ## private-devel globs
 %exclude %{_qt6_headerdir}/*/%{qt_version}/
 
@@ -833,6 +836,19 @@ make check -k ||:
 
 
 %changelog
+* Fri Jul 29 2022 Jan Grulich <jgrulich@redhat.com> - 6.3.1-3
+- Fix moc location in pkgconfig file
+  Resolves: bz#2112029
+
+* Sat Jul 23 2022 Fedora Release Engineering <releng@fedoraproject.org> - 6.3.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Wed Jul 13 2022 Jan Grulich <jgrulich@redhat.com> - 6.3.1-1
+- 6.3.1
+
+* Wed Apr 13 2022 Jan Grulich <jgrulich@redhat.com> - 6.3.0-1
+- 6.3.0
+
 * Fri Feb 25 2022 Jan Grulich <jgrulich@redhat.com> - 6.2.3-2
 - Enable s390x builds
 
