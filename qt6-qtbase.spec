@@ -3,7 +3,7 @@
 %global multilib_archs x86_64 %{ix86} %{?mips} ppc64 ppc s390x s390 sparc64 sparcv9
 %global multilib_basearchs x86_64 %{?mips64} ppc64 s390x sparc64
 
-%ifarch s390x ppc64le aarch64 armv7hl
+%ifarch s390x ppc64le aarch64 armv7hl riscv64
 %global no_sse2  1
 %endif
 
@@ -39,7 +39,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.4.1
-Release: 4%{?dist}
+Release: 4.rv64%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -844,6 +844,9 @@ make check -k ||:
 
 
 %changelog
+* Sun Jan 15 2023 Liu Yang <Yang.Liu.sn@gmail.com> -6.4.1-4.rv64
+- Fix build on riscv64.
+
 * Mon Jan 02 2023 Jan Grulich <jgrulich@redhat.com> - 6.4.1-4
 - Make -devel package to require database plugins
 
