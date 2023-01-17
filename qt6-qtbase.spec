@@ -7,6 +7,10 @@
 %global no_sse2  1
 %endif
 
+%ifarch riscv64
+%global debug_package %{nil}
+%endif
+
 %if 0%{?rhel} && 0%{?rhel} < 9
 %ifarch %{ix86}
 %global no_sse2  1
@@ -844,7 +848,10 @@ make check -k ||:
 
 
 %changelog
-* Sun Jan 15 2023 Liu Yang <Yang.Liu.sn@gmail.com> -6.4.1-4.rv64
+* Tue Jan 17 2023 Liu Yang <Yang.Liu.sn@gmail.com> - 6.4.1-4.rv64
+- Disable debug_package on riscv64.
+
+* Sun Jan 15 2023 Liu Yang <Yang.Liu.sn@gmail.com> - 6.4.1-4.rv64
 - Fix build on riscv64.
 
 * Mon Jan 02 2023 Jan Grulich <jgrulich@redhat.com> - 6.4.1-4
