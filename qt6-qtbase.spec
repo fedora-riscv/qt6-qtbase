@@ -99,7 +99,6 @@ Patch58: qtbase-libglvnd.patch
 Patch90: qtbase-gcc11.patch
 
 ## upstream patches
-Patch100: CVE-2023-24607-qtbase-6.4.patch
 
 # Do not check any files in %%{_qt6_plugindir}/platformthemes/ for requires.
 # Those themes are there for platform integration. If the required libraries are
