@@ -39,7 +39,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.4.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: LGPL-3.0-only OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 Url:     http://qt-project.org/
@@ -124,6 +124,7 @@ BuildRequires: libb2-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libmng-devel
 BuildRequires: libtiff-devel
+BuildRequires: libzstd-devel
 BuildRequires: tslib-devel
 BuildRequires: pkgconfig(alsa)
 # required for -accessibility
@@ -386,6 +387,7 @@ export MAKEFLAGS="%{?_smp_mflags}"
  -DQT_FEATURE_sql_psql=ON \
  -DQT_FEATURE_sql_sqlite=ON \
  -DQT_FEATURE_rpath=OFF \
+ -DQT_FEATURE_zstd=ON \
  %{?dbus_linked:-DQT_FEATURE_dbus_linked=ON} \
  %{?pcre:-DQT_FEATURE_system_pcre2=ON} \
  %{?sqlite:-DQT_FEATURE_system_sqlite=ON} \
@@ -843,6 +845,9 @@ make check -k ||:
 
 
 %changelog
+* Mon Apr 03 2023 Jan Grulich <jgrulich@redhat.com> - 6.4.3-2
+- Enable zstd support
+
 * Thu Mar 23 2023 Jan Grulich <jgrulich@redhat.com> - 6.4.3-1
 - 6.4.3
 
