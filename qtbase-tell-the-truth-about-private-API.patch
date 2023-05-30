@@ -20,7 +20,7 @@ index d8597326cc..f9da7b2171 100644
 
      if(TEST_ld_version_script)
 -        set(contents "Qt_${PROJECT_VERSION_MAJOR}_PRIVATE_API {\n    qt_private_api_tag*;\n")
-+        set(contents "Qt_${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}_PRIVATE_API {\n    qt_private_api_tag*;\n")
++        set(contents "Qt_${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}_PRIVATE_API {\n    qt_private_api_tag*;\n")
          if(arg_PRIVATE_HEADERS)
              foreach(ph ${arg_PRIVATE_HEADERS})
                  string(APPEND contents "    @FILE:${ph}@\n")
