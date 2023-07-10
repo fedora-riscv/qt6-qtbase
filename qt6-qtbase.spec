@@ -159,8 +159,7 @@ BuildRequires: pkgconfig(x11)
 BuildRequires: pkgconfig(sqlite3) >= 3.7
 BuildRequires: pkgconfig(harfbuzz) >= 0.9.42
 BuildRequires: pkgconfig(icu-i18n)
-BuildRequires: pkgconfig(libpcre2-posix) >= 10.20
-BuildRequires: pkgconfig(libpcre) >= 8.0
+BuildRequires: pkgconfig(libpcre2-16) >= 10.20
 %global pcre 1
 BuildRequires: pkgconfig(xcb-xkb)
 BuildRequires: pkgconfig(xcb) pkgconfig(xcb-glx) pkgconfig(xcb-icccm) pkgconfig(xcb-image) pkgconfig(xcb-keysyms) pkgconfig(xcb-renderutil) pkgconfig(xcb-cursor)
