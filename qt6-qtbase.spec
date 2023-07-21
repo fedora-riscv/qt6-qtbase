@@ -38,7 +38,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.5.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: LGPL-3.0-only OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 Url:     http://qt-project.org/
@@ -817,6 +817,9 @@ make check -k ||:
 
 
 %changelog
+* Fri Jul 21 2023 Fedora Release Engineering <releng@fedoraproject.org> - 6.5.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
 * Fri Jul 21 2023 Jan Grulich <jgrulich@redhat.com> - 6.5.2-1
 - 6.5.2
 
