@@ -38,7 +38,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.5.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 License: LGPL-3.0-only OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 Url:     http://qt-project.org/
@@ -116,7 +116,11 @@ BuildRequires: cups-devel
 BuildRequires: desktop-file-utils
 BuildRequires: findutils
 BuildRequires: double-conversion-devel
+%if 0%{?fedora} || 0%{?epel}
 BuildRequires: libb2-devel
+%else
+Provides:      bundled(libb2)
+%endif
 BuildRequires: libjpeg-devel
 BuildRequires: libmng-devel
 BuildRequires: libtiff-devel
@@ -821,6 +825,9 @@ make check -k ||:
 
 
 %changelog
+* Mon Aug 28 2023 Yaakov Selkowitz <yselkowi@redhat.com> - 6.5.2-4
+- Use bundled libb2 in RHEL builds
+
 * Fri Aug 11 2023 Jan Grulich <jgrulich@redhat.com> - 6.5.2-3
 - Don't use QGnomePlatform by default on F39+
 
