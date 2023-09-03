@@ -38,7 +38,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.5.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 License: LGPL-3.0-only OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 Url:     http://qt-project.org/
@@ -66,6 +66,7 @@ Source6: 10-qt6-check-opengl2.sh
 Source10: macros.qt6-qtbase
 
 Patch1: qtbase-tell-the-truth-about-private-API.patch
+Patch2: qtbase-CMake-Install-objects-files-into-ARCHDATADIR.patch
 
 # upstreamable patches
 # namespace QT_VERSION_CHECK to workaround major/minor being pre-defined (#1396755)
@@ -473,9 +474,6 @@ rm %{buildroot}/%{_qt6_libexecdir}/qt-cmake-private-install.cmake
 # Use better location for some new scripts in qtbase-6.0.1
 mv %{buildroot}/%{_qt6_libexecdir}/ensure_pro_file.cmake %{buildroot}/%{_qt6_libdir}/cmake/Qt6/ensure_pro_file.cmake
 
-# FIXME why is this being installed?
-rm %{buildroot}/%{_qt6_libdir}/objects-RelWithDebInfo/ExampleIconsPrivate_resources_1/.rcc/qrc_example_icons.cpp.o
-
 %check
 # verify Qt6.pc
 export PKG_CONFIG_PATH=%{buildroot}%{_libdir}/pkgconfig
@@ -720,6 +718,7 @@ make check -k ||:
 %{_qt6_libdir}/cmake/Qt6XcbQpaPrivate/*.cmake
 %{_qt6_libdir}/cmake/Qt6Xml/*.cmake
 %{_qt6_libdir}/qt6/metatypes/*.json
+%{_qt6_libdir}/qt6/objects-RelWithDebInfo/ExampleIconsPrivate_resources_1/.rcc/qrc_example_icons.cpp.o
 %{_qt6_libdir}/pkgconfig/*.pc
 
 %if 0%{?egl}
@@ -825,6 +824,9 @@ make check -k ||:
 
 
 %changelog
+* Sun Sep 03 2023 LuK1337 <priv.luk@gmail.com> - 6.5.2-5
+- Unbreak CMake Qt6::ExampleIconsPrivate package
+
 * Mon Aug 28 2023 Yaakov Selkowitz <yselkowi@redhat.com> - 6.5.2-4
 - Use bundled libb2 in RHEL builds
 
