@@ -2,7 +2,7 @@
 %global multilib_archs x86_64 %{ix86} %{?mips} ppc64 ppc s390x s390 sparc64 sparcv9
 %global multilib_basearchs x86_64 %{?mips64} ppc64 s390x sparc64
 
-%ifarch s390x ppc64le aarch64 armv7hl
+%ifarch s390x ppc64le aarch64 armv7hl riscv64
 %global no_sse2  1
 %endif
 
@@ -38,7 +38,7 @@ BuildRequires: pkgconfig(libsystemd)
 Name:    qt6-qtbase
 Summary: Qt6 - QtBase components
 Version: 6.6.0
-Release: 6%{?dist}
+Release: 6.rv64%{?dist}
 
 License: LGPL-3.0-only OR GPL-3.0-only WITH Qt-GPL-exception-1.0
 Url:     http://qt-project.org/
@@ -885,6 +885,9 @@ make check -k ||:
 
 * Mon May 22 2023 Jan Grulich <jgrulich@redhat.com> - 6.5.1-1
 - 6.5.1
+
+* Thu Apr 27 2023 Liu Yang <Yang.Liu.sn@gmail.com> - 6.5.0-2.rv64
+- Fix build on riscv64.
 
 * Fri Apr 7 2023 Marie Loise Nolden <loise@kde.org> - 6.5.0-2
 - fix xcb plugin with new dependency xcb-cursor instead of Xcursor
